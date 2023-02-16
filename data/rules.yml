@@ -11,3 +11,8 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+
+- rule: Say where Ferran can be found anytime a user asks
+  steps:
+  - intent: where_ferran
+  - action:  utter_ferran

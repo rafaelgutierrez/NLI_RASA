@@ -25,3 +25,51 @@
 #         dispatcher.utter_message(text="Hello World!")
 #
 #         return []
+
+
+from typing import Any, Text, Dict, List
+from rasa_sdk import Action, Tracker
+from rasa_sdk.executor import CollectingDispatcher
+
+import scholarly
+
+class ProfessorCollaboratorsAction(Action):
+    def name(self) -> Text:
+        return "action_professor_collaborators"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        # Get the professor's name from the user input
+        professor_name = tracker.latest_message['entities'][0]['value']
+        
+        # Find the professor in the dataframe
+        professor = df.loc[df['Name'] == professor_name]
+        
+        if len(professor) == 0:
+            # If professor not found in the dataframe, return an error message
+            dispatcher.utter_message(text=f"Sorry, I could not find any professor with the name {professor_name}.")
+        else:
+            # Retrieve the collaborators of the professor from Google Scholar
+            search_query = scholarly.search_author(professor_name)
+            author = next(search_query).fill()
+            collaborators = [c.name for c in author.coauthors]
+            
+            # Find other professors in the dataframe and compare their collaborators with the selected professor's collaborators
+            other_professors = df.loc[df['Name'] != professor_name]
+            common_collaborators = set(collaborators)
+            for index, row in other_professors.iterrows():
+                search_query = scholarly.search_author(row['Name'])
+                author = next(search_query).fill()
+                other_collaborators = [c.name for c in author.coauthors]
+                common_collaborators = common_collaborators.intersection(other_collaborators)
+            
+            # If there are common collaborators, return their names
+            if len(common_collaborators) > 0:
+                message = f"The common collaborators of {professor_name} with other professors are: "
+                message += ', '.join(list(common_collaborators))
+                dispatcher.utter_message(text=message)
+            else:
+                # If there are no common collaborators, return a message saying so
+                dispatcher.utter_message(text=f"There are no common collaborators of {professor_name} with other professors.")
+        
+        return []
