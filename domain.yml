@@ -8,8 +8,10 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
-  - where_ferran
-  - where_professor
+
+#responses:
+#  - where_ferran
+#  - where_professor
 
 responses:
   utter_greet:
@@ -32,15 +34,10 @@ responses:
   - text: "I am a bot, powered by Rasa."
 
   utter_professor_room:
-  -text: "Certainly, {professor_fullname} can usually be found in room {room}"
+  - text: "Certainly, {professor_fullname} can usually be found in room {room}"
 
   utter_Ferran:
-  -text: Ferran is found in room 55.228, although that is not in the CSV
+  - text: "Ferran is found in room 55.228, although that is not in the CSV"
 
- ## utter_professor_collaborators:
- ## -text: "Ok, THIIIIIS"
-
-
-session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: true
+iration_time: 60
+carry_over_slots_to_new_session: true
