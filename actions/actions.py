@@ -30,6 +30,8 @@
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
+import numpy as np 
+import pandas as pd
 
 import scholarly
 
@@ -37,11 +39,37 @@ class ProfessorCollaboratorsAction(Action):
     def name(self) -> Text:
         return "action_professor_collaborators"
 
+
+    def get_professor_info(name):
+            # look up professor by name
+            professor = df.loc[df['Name'] == name]
+
+            if professor.empty:
+                # professor not found
+                return {'error': 'Professor not found'}
+
+            # extract information
+            department = professor['Department'].iloc[0]
+            office = professor['Office'].iloc[0]
+            # add more fields as needed
+
+            # return information as a dictionary
+            return {'department': department, 'office': office}
+
+
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
+        df = pd.read_csv('Data_Teachers.csv')
+              
+
         # Get the professor's name from the user input
         professor_name = tracker.latest_message['entities'][0]['value']
-        
+        a = np.array((2))
+
+        (b,c) = self.get_professor_info(professor_name)
+        print("Hey, department is",b,"and office is", c)
+
+
         # Find the professor in the dataframe
         professor = df.loc[df['Name'] == professor_name]
         
