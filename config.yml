@@ -1,7 +1,7 @@
 # The config recipe.
 # https://rasa.com/docs/rasa/model-configuration/
 recipe: default.v1
-
+#rafael  testing a pull request
 # Configuration for Rasa NLU.
 # https://rasa.com/docs/rasa/nlu/components/
 language: en
